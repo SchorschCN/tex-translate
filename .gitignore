@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+#examples
+examples/
+*.docx
+*.txt
+*.tex
+gtexfix_commands
+gtexfix_comments
+gtexfix_latex
