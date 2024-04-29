@@ -63,21 +63,30 @@ with open('gtexfix_comments', 'wb') as fp:
 ### Hide LaTeX constructs \begin{...} ... \end{...}
 start_values=[]
 end_values=[]
+
 for m in re.finditer(r'\\begin{ *equation\** *}|\\begin{ *figure\** *}|\\begin{ *eqnarray\** *}|\\begin{ *multline\** *}'
     +r'|\\begin{ *thebibliography *}|\\begin{ *verbatim\** *}|\\begin{ *table\** *}|\\begin{ *subequations\** *}|\\begin{ *align\** *}'
-    +r'|\\begin{ *displaymath\** *}|\\begin{ *gather\** *}|\\\[',text):
+    +r'|\\begin{ *displaymath\** *}|\\begin{ *gather\** *}|\\begin{ *lstlisting *}|\\begin{ *itemize *}|\\begin{*enumerate *}|\\begin{ *subfigure *}|\\\[',text):
     start_values.append(m.start())
+#    print(m)
+
+#for m in re.finditer(r'\\end{ *equation\** *}|\\end{ *figure\** *}|\\end{ *eqnarray\** *}|\\end{ *multline\** *}'
+#    +r'|\\end{ *thebibliography *}|\\end{ *verbatim\** *}|\\end{ *table\** *}|\\end{ *subequations\** *}|\\end{ *align\** *}'
+#    +r'|\\end{ *displaymath\** *}|\\end{ *gather\** *}|\\end{ *lstlisting *}|\\end{ *itemize *}|\\end{*enumerate *}|\\end{ *subfigure *}|\\\]',text):
+#    end_values.append(m.end())
+#    print(m)
 for m in re.finditer(r'\\end{ *equation\** *}|\\end{ *figure\** *}|\\end{ *eqnarray\** *}|\\end{ *multline\** *}'
     +r'|\\end{ *thebibliography *}|\\end{ *verbatim\** *}|\\end{ *table\** *}|\\end{ *subequations\** *}|\\end{ *align\** *}'
-    +r'|\\end{ *displaymath\** *}|\\end{ *gather\** *}|\\\]',text):
+    +r'|\\end{ *displaymath\** *}|\\end{ *gather\** *}|\\end{ *lstlisting *}|\\end{ *itemize *}|\\end{*enumerate *}|\\end{ *subfigure *}',text):
     end_values.append(m.end())
+#    print(m)
 nitems=len(start_values)
 
 print(start_values)
 print()
 print(end_values)
 
-#assert(len(end_values)==nitems)
+assert(len(end_values)==nitems)
 if(nitems>0):
     newtext=text[:start_values[0]]
     for neq in range(nitems-1):
@@ -110,7 +119,8 @@ with open('gtexfix_commands', 'wb') as fp:
     pickle.dump(commands, fp)
 
 ### Save the processed output to .txt file
-limit=30000 # Estimated Google Translate character limit
+#limit=30000 # Estimated Google Translate character limit
+limit=3000000
 filebase = re.sub('.tex$','',args.filename)
 start=0
 npart=0
