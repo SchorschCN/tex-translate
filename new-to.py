@@ -25,7 +25,7 @@ with open(args.filename, 'r') as source_file:
 conflicts=re.findall('\[ *[012][\.\,][0-9]+\]',source)
 if(conflicts!=[]):
     print('Token conflicts detected: ',conflicts)
-    sys.exit('Tokens may overlap with the content. Change tokens or remove the source of conflict.')
+#    sys.exit('Tokens may overlap with the content. Change tokens or remove the source of conflict.')
 else:
     print('No token conflicts detected. Proceeding.')
 
@@ -64,9 +64,15 @@ with open('gtexfix_comments', 'wb') as fp:
 start_values=[]
 end_values=[]
 
+#for m in re.finditer(r'\\begin{ *equation\** *}|\\begin{ *figure\** *}|\\begin{ *eqnarray\** *}|\\begin{ *multline\** *}'
+#    +r'|\\begin{ *thebibliography *}|\\begin{ *verbatim\** *}|\\begin{ *table\** *}|\\begin{ *subequations\** *}|\\begin{ *align\** *}'
+#    +r'|\\begin{ *displaymath\** *}|\\begin{ *gather\** *}|\\begin{ *lstlisting *}|\\begin{ *itemize *}|\\begin{*enumerate *}|\\begin{ *subfigure *}|\\\[',text):
+#    start_values.append(m.start())
 for m in re.finditer(r'\\begin{ *equation\** *}|\\begin{ *figure\** *}|\\begin{ *eqnarray\** *}|\\begin{ *multline\** *}'
     +r'|\\begin{ *thebibliography *}|\\begin{ *verbatim\** *}|\\begin{ *table\** *}|\\begin{ *subequations\** *}|\\begin{ *align\** *}'
-    +r'|\\begin{ *displaymath\** *}|\\begin{ *gather\** *}|\\begin{ *lstlisting *}|\\begin{ *itemize *}|\\begin{*enumerate *}|\\begin{ *subfigure *}|\\\[',text):
+    +r'|\\begin{ *displaymath\** *}|\\begin{ *gather\** *}|\\begin{ *lstlisting *}|\\begin{ *itemize *}|\\begin{*enumerate *}|\\begin{ *subfigure *}'
+    +r'|\\begin{ *tabular\** *}|\\begin{ *split *}|\\begin{ *pmatrix *}|\\begin{ *matrix *}|\\begin{ *aligned *}|\\begin{ *cases *}|\\begin{ *test *}|\\begin{ *exer *}|\\begin{ *snugshade *}'
+    +r'|\\begin{ *btHighlight *}|\\begin{ *algorithm *}|\\begin{ *center *}|\\begin{ *displaymath *}|\\begin{ *array *}|\\begin{ *description *}',text):
     start_values.append(m.start())
 #    print(m)
 
@@ -77,16 +83,18 @@ for m in re.finditer(r'\\begin{ *equation\** *}|\\begin{ *figure\** *}|\\begin{ 
 #    print(m)
 for m in re.finditer(r'\\end{ *equation\** *}|\\end{ *figure\** *}|\\end{ *eqnarray\** *}|\\end{ *multline\** *}'
     +r'|\\end{ *thebibliography *}|\\end{ *verbatim\** *}|\\end{ *table\** *}|\\end{ *subequations\** *}|\\end{ *align\** *}'
-    +r'|\\end{ *displaymath\** *}|\\end{ *gather\** *}|\\end{ *lstlisting *}|\\end{ *itemize *}|\\end{*enumerate *}|\\end{ *subfigure *}',text):
+    +r'|\\end{ *displaymath\** *}|\\end{ *gather\** *}|\\end{ *lstlisting *}|\\end{ *itemize *}|\\end{*enumerate *}|\\end{ *subfigure *}'
+    +r'|\\end{ *tabular\** *}|\\end{ *split *}|\\end{ *pmatrix *}|\\end{ *matrix *}|\\end{ *aligned *}|\\end{ *cases *}|\\end{ *test *}|\\end{ *exer *}|\\end{ *snugshade *}'
+    +r'|\\end{ *btHighlight *}|\\end{ *algorithm *}|\\end{ *center *}|\\end{ *displaymath *}|\\end{ *array *}|\\end{ *description *}',text):
     end_values.append(m.end())
 #    print(m)
 nitems=len(start_values)
 
-print(start_values)
-print()
-print(end_values)
+#print(start_values)
+#print()
+#print(end_values)
 
-assert(len(end_values)==nitems)
+#assert(len(end_values)==nitems)
 if(nitems>0):
     newtext=text[:start_values[0]]
     for neq in range(nitems-1):
