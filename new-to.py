@@ -63,7 +63,7 @@ with open('gtexfix_comments', 'wb') as fp:
 ### Hide LaTeX constructs \begin{...} ... \end{...}
 start_values=[]
 end_values=[]
-
+beginend=[]
 #for m in re.finditer(r'\\begin{ *equation\** *}|\\begin{ *figure\** *}|\\begin{ *eqnarray\** *}|\\begin{ *multline\** *}'
 #    +r'|\\begin{ *thebibliography *}|\\begin{ *verbatim\** *}|\\begin{ *table\** *}|\\begin{ *subequations\** *}|\\begin{ *align\** *}'
 #    +r'|\\begin{ *displaymath\** *}|\\begin{ *gather\** *}|\\begin{ *lstlisting *}|\\begin{ *itemize *}|\\begin{*enumerate *}|\\begin{ *subfigure *}|\\\[',text):
@@ -74,7 +74,8 @@ for m in re.finditer(r'\\begin{ *equation\** *}|\\begin{ *figure\** *}|\\begin{ 
     +r'|\\begin{ *tabular\** *}|\\begin{ *split *}|\\begin{ *pmatrix *}|\\begin{ *matrix *}|\\begin{ *aligned *}|\\begin{ *cases *}|\\begin{ *test *}|\\begin{ *exer *}|\\begin{ *snugshade *}'
     +r'|\\begin{ *btHighlight *}|\\begin{ *algorithm *}|\\begin{ *center *}|\\begin{ *displaymath *}|\\begin{ *array *}|\\begin{ *description *}',text):
     start_values.append(m.start())
-#    print(m)
+    beginend.append(m.group())
+#   print(m)
 
 #for m in re.finditer(r'\\end{ *equation\** *}|\\end{ *figure\** *}|\\end{ *eqnarray\** *}|\\end{ *multline\** *}'
 #    +r'|\\end{ *thebibliography *}|\\end{ *verbatim\** *}|\\end{ *table\** *}|\\end{ *subequations\** *}|\\end{ *align\** *}'
@@ -87,6 +88,7 @@ for m in re.finditer(r'\\end{ *equation\** *}|\\end{ *figure\** *}|\\end{ *eqnar
     +r'|\\end{ *tabular\** *}|\\end{ *split *}|\\end{ *pmatrix *}|\\end{ *matrix *}|\\end{ *aligned *}|\\end{ *cases *}|\\end{ *test *}|\\end{ *exer *}|\\end{ *snugshade *}'
     +r'|\\end{ *btHighlight *}|\\end{ *algorithm *}|\\end{ *center *}|\\end{ *displaymath *}|\\end{ *array *}|\\end{ *description *}',text):
     end_values.append(m.end())
+    beginend.append(m.group())
 #    print(m)
 nitems=len(start_values)
 
@@ -95,6 +97,21 @@ nitems=len(start_values)
 #print(end_values)
 
 #assert(len(end_values)==nitems)
+#if(nitems>0):
+    #newtext=text[:start_values[0]]
+    #for neq in range(nitems-1):
+        #latex.append(text[start_values[neq]:end_values[neq]])
+        #newtext += '[1.%d]'%(len(latex)-1) + text[end_values[neq]:start_values[neq+1]]
+    #latex.append(text[start_values[nitems-1]:end_values[nitems-1]])
+    #newtext += '[1.%d]'%(len(latex)-1) + text[end_values[nitems-1]:]
+    #text=newtext
+#begin end count
+bec=0
+def repl_be(obj):
+    global bec
+    bec += 1
+    return '[1.%d]'%(bec-1)
+text=recommand.sub(repl_f,text)
 if(nitems>0):
     newtext=text[:start_values[0]]
     for neq in range(nitems-1):
@@ -113,9 +130,11 @@ with open('gtexfix_latex', 'wb') as fp:
 ### Replace LaTeX commands, formulas and comments by tokens
 # Regular expression r'(\$+)(?:(?!\1)[\s\S])*\1' for treatment of $...$ and $$...$$ from:
 # https://stackoverflow.com/questions/54663900/how-to-use-regular-expression-to-remove-all-math-expression-in-latex-file
-recommand = re.compile(r'___GTEXFIXCOMMENT[0-9]*___|\\title|\\chapter\**|\\section\**|\\subsection\**|\\subsubsection\**|~*\\footnote[0-9]*|(\$+)(?:(?!\1)[\s\S])*\1|~*\\\w*\s*{[^}]*}\s*{[^}]*}|~*\\\w*\s*{[^}]*}|~*\\\w*')
+#recommand = re.compile(r'___GTEXFIXCOMMENT[0-9]*___|\\title|\\chapter\**|\\section\**|\\subsection\**|\\subsubsection\**|~*\\footnote[0-9]*|(\$+)(?:(?!\1)[\s\S])*\1|~*\\\w*\s*{[^}]*}\s*{[^}]*}|~*\\\w*\s*{[^}]*}|~*\\\w*')
+recommand = re.compile(r'___GTEXFIXCOMMENT[0-9]*___|\\title|\\chapter\**|\\section\**|\\subsection\**|\\subsubsection\**|~*\\footnote[0-9]*|(\$+)(?:(?!\1)[\s\S])*\1|~*\\\w*\s*{[^}]*}*{[^}]*}|~*\\\w*\s*{{[^}]*}}|~*\\\w*\s*{[^}]*}|~*\\\w*(?!\")|~*\\label{[^}]*}')
 commands=[]
 for m in recommand.finditer(text):
+    print(m)
     commands.append(m.group())
 nc=0
 def repl_f(obj):
