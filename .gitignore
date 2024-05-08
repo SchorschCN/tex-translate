@@ -129,7 +129,9 @@ dmypy.json
 .pyre/
 
 #examples
+book/
 examples/
+examples/*
 *.docx
 *.txt
 *.tex
